@@ -1,0 +1,6 @@
+bs4
+geopy
+datetime
+urllib
+python-telegram-bot==13.*
+deep-translator==1.10.*
