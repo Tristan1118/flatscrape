@@ -49,7 +49,7 @@ def wggesucht(exploredOfferIDs, messenger, searchParameters, flatshare=True):
             messenger.handle_advert(offer)
     if not flatshare:
         return True
-    for searchURL in searchParameters.wggesuchtFlatUrls:
+    for searchURL in searchParameters.wggesuchtWGUrls:
         offers = scraper.scrape_search_page(searchURL)
         for offer in offers:
             if not advert.filter_advert(offer, searchParameters):
@@ -91,7 +91,7 @@ def main(awsEvent, read_offer_method=get_seen_offers, write_offer_method=dump_se
     scrapeThreads = [allThreads[i] for i in runIds]
     for t in scrapeThreads:
         t.start()
-    while any(map(lambda t: t.is_alive(), scrapeThreads)):
+    while any(map(lambda t: t.is_alive(), scrapeThreads)) or messenger.check_queue():
         handledIds = messenger.handle_queue()
         if handledIds:
             print(f"[flatscrape] Handled the ids: {handledIds}")
