@@ -1,0 +1,35 @@
+{
+	"interval": 5,
+	"maxPrice": 1000,
+	"minSize": 40,
+	"moveInLower": "01.03.2023",
+	"moveInUpper": "01.01.2100",
+	"moveOutLower": "01.04.2023",
+	"moveOutUpper": "01.01.2100",
+	"wggesuchtUrls": {
+		"Flat": [
+			"https://www.wg-gesucht.de/1-zimmer-wohnungen-und-wohnungen-in-Berlin.8.1+2.1.0.html?offer_filter=1&city_id=8&noDeact=1&categories%5B%5D=1&categories%5B%5D=2&rent_types%5B%5D=0&rMax=900&fur=1&exc=2&kit=1",
+			"https://www.wg-gesucht.de/1-zimmer-wohnungen-und-wohnungen-in-Berlin.8.1+2.1.0.html?offer_filter=1&city_id=8&noDeact=1&categories%5B%5D=1&categories%5B%5D=2&rent_types%5B%5D=0&rMax=900&exc=2&kit=1",
+			"https://www.wg-gesucht.de/1-zimmer-wohnungen-und-wohnungen-in-Berlin.8.1+2.1.0.html?offer_filter=1&city_id=8&noDeact=1&categories%5B%5D=1&categories%5B%5D=2&rent_types%5B%5D=0&rMax=900&exc=2"
+		],
+		"WG": [
+			"https://www.wg-gesucht.de/wg-zimmer-in-Berlin.8.0.1.0.html?offer_filter=1&city_id=8&noDeact=1&categories%5B%5D=0&rent_types%5B%5D=0&rMax=900&wgMxT=4&fur=1&exc=2",
+			"https://www.wg-gesucht.de/wg-zimmer-in-Berlin.8.0.1.0.html?offer_filter=1&city_id=8&noDeact=1&categories%5B%5D=0&rent_types%5B%5D=0&rMax=900&wgMxT=4&exc=2"
+		]
+	},
+	"ebayUrls": [
+		"https://www.ebay-kleinanzeigen.de/s-wohnung-mieten/berlin/c203l3331",
+		"https://www.ebay-kleinanzeigen.de/s-auf-zeit-wg/berlin/c199l3331"
+	],
+	"city": "Berlin",
+	"POI_DISTANCES": {
+		"Workplace": "Some Address",
+		"Hobby": "Another Address"
+	},
+	"POI_ROUTES": [
+		"Work Address"
+	],
+	"TELEGRAM_BOT_TOKEN": "SECRET-TOKEN",
+	"TELEGRAM_USER_ID": 00000000,
+	"LANG": "en"
+}
