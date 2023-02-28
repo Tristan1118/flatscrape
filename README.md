@@ -15,3 +15,7 @@ Also, it can be configured so that no offer is shown multiple times, so that you
 ## Notes
 * The `DataStorageClass` is funny. Not a very serious/elegant idea, but it actually works well.
 * If I had spent the time just looking for a flat instead, I probably would have found one sooner.
+
+
+# Future Ideas
+* Separate scraping from messaging, so that it's easy to configure for multiple users with the same search URLs. Filters and POIs should be customizable per user.
