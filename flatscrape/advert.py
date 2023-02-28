@@ -49,7 +49,7 @@ class Advert(AdvertNoPrint):
         if (title := self.title):
             lines.append(title.get())
         if (flatType := self.flatType):
-            lines.append(f"Is: {flatType.get()}")
+            lines.append(f"Type: {flatType.get()}")
         if (price := self.price):
             lines.append(f"Price: {price.get()}€")
         if (size := self.size):
@@ -76,7 +76,7 @@ class Advert(AdvertNoPrint):
         if (description := self.description):
             lines.append(description.get()[:MAX_DESCRIPTION_LEN])
         if (url := self.url):
-            lines.append(url.get())
+            lines.append("Link:" url.get())
         if (address := self.address):
             lines.append(f"Address: {address.get()}")
         if (routes := self.routes):
