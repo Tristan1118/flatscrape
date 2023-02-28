@@ -59,7 +59,8 @@ class Messenger(object):
     def _send_message_telegram(self, msg):
         try:
             for teleUserId in self.teleUserIds:
-                telegram.Bot(self.teleBotToken).send_message(teleUserId, msg[:3500])
+                telegram.Bot(self.teleBotToken).send_message(teleUserId, msg[:3500],\
+                    disable_notification=True)
         except ValueError as e:
             print("Error sending message: ", e)
             
