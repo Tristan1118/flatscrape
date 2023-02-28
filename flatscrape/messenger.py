@@ -12,9 +12,9 @@ INDIVIDUAL_DIST_LIMIT = 6
 
 class Messenger(object):
     """Send messages via telegram"""
-    def __init__(self, teleBotToken, teleUserId, translate=None):
+    def __init__(self, teleBotToken, teleUserIds, translate=None):
         self.teleBotToken = teleBotToken
-        self.teleUserId = teleUserId
+        self.teleUserIds = teleUserIds
         self.joiner = ""
         self.individualMessagesQueue = []
         self.bulkMessageQueue = []
@@ -58,7 +58,8 @@ class Messenger(object):
 
     def _send_message_telegram(self, msg):
         try:
-            telegram.Bot(self.teleBotToken).send_message(self.teleUserId, msg[:3500])
+            for teleUserId in self.teleUserIds:
+                telegram.Bot(self.teleBotToken).send_message(teleUserId, msg[:3500])
         except ValueError as e:
             print("Error sending message: ", e)
             

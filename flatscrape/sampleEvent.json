@@ -30,6 +30,9 @@
 		"Work Address"
 	],
 	"TELEGRAM_BOT_TOKEN": "SECRET-TOKEN",
-	"TELEGRAM_USER_ID": 1337,
+	"TELEGRAM_USER_IDS": [
+		1337,
+		1338
+	],
 	"LANG": "en"
 }

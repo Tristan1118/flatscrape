@@ -82,7 +82,7 @@ def dump_seen_offers(seenOffers):
 def main(awsEvent, read_offer_method=get_seen_offers, write_offer_method=dump_seen_offers, runIds = [ID_EBAY, ID_WG_SHARE, ID_WG_NOSHARE]):
     seenOffers = read_offer_method()
     searchParameters = SearchParameters(awsEvent)
-    messenger = Messenger(awsEvent.get("TELEGRAM_BOT_TOKEN"), awsEvent.get("TELEGRAM_USER_ID"))
+    messenger = Messenger(awsEvent.get("TELEGRAM_BOT_TOKEN"), awsEvent.get("TELEGRAM_USER_IDS"))
     allThreads = [threading.Thread(target=ebay, args=(seenOffers["ebay"], messenger, searchParameters,)),
                   threading.Thread(target=wggesucht, args=(seenOffers["wggesucht"], messenger, searchParameters,)),
                   threading.Thread(target=wggesucht, args=(seenOffers["wggesucht"], messenger, searchParameters, False))]
