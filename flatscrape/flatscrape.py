@@ -9,8 +9,7 @@ from DataStorage import SearchParameters
 from messenger import Messenger
 from scraper import WgGesuchtScraper, EbayScraper
 
-ID_EBAY, ID_WG_SHARE, ID_WG_NOSHARE = 0,1,2
-ALL_RUN_IDS = [ID_EBAY, ID_WG_SHARE, ID_WG_NOSHARE]
+ALL_RUN_IDS = [ID_EBAY, ID_WG_SHARE, ID_WG_NOSHARE] = 0,1,2
 # For testing (non-lambda deployment)
 PERSISTANCY_FILE_LOCAL = "exploredIds.json"
 
