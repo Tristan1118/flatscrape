@@ -141,11 +141,6 @@ class EbayScraper(Scraper):
         super(EbayScraper, self).__init__(*args, **kwargs)
         self._baseURL = 'https://www.ebay-kleinanzeigen.de'
 
-    def _prefilter_offer(self, exposeContainerBS):
-        price = util.get_int_from_text(self._find_in_soup(
-            exposeContainerBS, class_="aditem-main--middle--price"))
-        return super(EbayScraper, self)._prefilter_offer(price)
-
     def _extract_from_expose(self, exposeUrl):
         exposeBS = self._make_request(exposeUrl)
         advert = advert_module.Advert()
@@ -193,8 +188,7 @@ class EbayScraper(Scraper):
         adverts = []
         for expose in offerSoup.find_all(class_="aditem"):
             exposeId = int(expose.get("data-adid"))
-            if exposeId in self._exploredOfferIDs or \
-                    not self._prefilter_offer(expose):
+            if exposeId in self._exploredOfferIDs:
                 continue
             exposeUri = expose.get("data-href")
             exposeUrl = urllib.parse.urljoin(self._baseURL, exposeUri)
