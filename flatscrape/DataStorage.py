@@ -1,7 +1,10 @@
 import datetime as dt
+import logging
 import geopy
 import geopy.distance
 import util
+
+logger = logging.getLogger(__name__)
 
 class DataField():
     """ Typed dictionary entry I guess """

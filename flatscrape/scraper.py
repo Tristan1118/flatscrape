@@ -9,6 +9,8 @@ import urllib
 import advert as advert_module
 import util
 
+logger = logging.getLogger(__name__)
+
 # This file is a mess and I hate it - these websites are not too friendly for bots.
 # So some evasion/request throttling is done, which introduces
 # some bad division of work (like filtering offers in the scraper, because this
@@ -20,7 +22,6 @@ MAX_REQUEST = 10
 class Scraper(abc.ABC):
     """Base class for scraping offers from websites"""
     def __init__(self, exploredOfferIDs = [], maxPrice=900):
-        self._logger = logging.getLogger("Scraper")
         self._requestTimes = [] # store times of requests for ddos detection
         self._exploredOfferIDs = exploredOfferIDs # seen offers, do not handle same ad twice
         self._maxPrice = maxPrice # max price in euros
@@ -45,27 +46,23 @@ class Scraper(abc.ABC):
         headers = {'User-agent': self._get_user_agent()}
         reqCount = 0
         # again, this is weird but seems to happen. 404 sometimes goes away
-        #print(requests.get(url, headers=headers))
         while reqCount < MAX_REQUEST and \
                 (resp := requests.get(url, headers=headers)).status_code == 404:
-            print("Got 404")
+            logger.warning("Got 404")
             self._requestTimes.append(time.time())
             time.sleep(5)
         if resp.status_code != 200:
-            print("Got something else")
-            self._logger.error(
-                f"Got response: {resp.status_code}: {resp.text}")
-        # parse as soup
-        #print("parsing ", resp.text)
+            logger.warning(f"Got response {resp.status_code}: {resp.text}")
+            # parse as soup
         soup = bs4.BeautifulSoup(resp.text, 'html.parser')
-        print("Parser done souping")
+        logger.debug("Parser done souping")
         return soup
 
     def _find_in_soup(self, soup, *args, **kwargs):
         """Wrapper for soup.find with error handling."""
         soupElement = soup.find(*args, **kwargs)
         if not soupElement:
-            self._logger.debug(
+            logger.warning(
                 f"No element found with args {args} and kwargs {kwargs}")
             return ""
         return soupElement.text.strip()
@@ -157,8 +154,7 @@ class EbayScraper(Scraper):
         advert.title.set(self._find_in_soup(
             exposeBS, class_="boxedarticle--title"))
         if not advert.title:
-            print("NO TITLE")
-            print(exposeBS)
+            logger.warning(f"Advert without title: {exposeUrl}")
         advert.address.set(self._find_in_soup(
             exposeBS, itemprop="locality"))
         priceText = self._find_in_soup(exposeBS, class_="boxedarticle--price")

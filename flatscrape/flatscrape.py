@@ -9,6 +9,9 @@ from DataStorage import SearchParameters
 from messenger import Messenger
 from scraper import WgGesuchtScraper, EbayScraper
 
+logging.basicConfig()
+logger = logging.getLogger(__name__)
+
 ALL_RUN_IDS = [ID_EBAY, ID_WG_SHARE, ID_WG_NOSHARE] = 0,1,2
 # For testing (non-lambda deployment)
 PERSISTANCY_FILE_LOCAL = "exploredIds.json"
@@ -30,7 +33,7 @@ def ebay(exploredOfferIDs, messenger, searchParameters):
             set_routes(advert, searchParameters.poiRoutes)
             if (language := searchParameters.translate):
                 translate_advert(advert, language)
-            print("[flatscrape] handling advert ebay")
+            logger.info("Handling advert ebay")
             messenger.handle_advert(advert)
     return True
 
@@ -106,11 +109,11 @@ def main(awsEvent,\
     while any(map(lambda t: t.is_alive(), scrapeThreads)) or messenger.check_queue():
         handledIds = messenger.handle_queue()
         if handledIds:
-            print(f"[flatscrape] Handled the ids: {handledIds}")
+            logger.info(f"Handled the ids: {handledIds}")
             seenOffers["ebay"] += handledIds["ebay"]
             seenOffers["wggesucht"] += handledIds["wggesucht"]
-            print(f"[flatscrape] current offers: {seenOffers}")
-    print(f"[flatscrape] writing {seenOffers}")
+            logger.info(f"Current offers: {seenOffers}")
+    logger.debug(f"Writing {seenOffers}")
     write_offer_method(seenOffers)
 
 if __name__ == '__main__':
@@ -118,5 +121,4 @@ if __name__ == '__main__':
     import sys
     with open(sys.argv[1], "r") as f:
         awsEvent = json.load(f)
-    print(awsEvent)
     main(awsEvent)

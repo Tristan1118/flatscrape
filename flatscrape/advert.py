@@ -1,9 +1,12 @@
 import datetime as dt
+import logging
 import urllib
 import deep_translator
 import geopy
 import geopy.distance
 import DataStorage
+
+logger = logging.getLogger(__name__)
 
 MAX_DESCRIPTION_LEN = 1500
 

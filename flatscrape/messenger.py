@@ -1,7 +1,10 @@
 import datetime as dt
+import logging
 import threading
 import time
 import telegram
+
+logger = logging.getLogger(__name__)
 
 # Distance limit, at which point offers become less interesting. This is not
 # a hard filter, only to determine the priority of a message.
@@ -49,14 +52,14 @@ class Messenger(object):
 
     def add_to_queue(self, msg, individual=True):
         """Thread safe queueing for asynchronous messaging."""
-        print(f"[interpreter] adding to queue {individual=}")
+        logger.debug(f"Adding to queue {individual=}")
         queue = self.individualMessagesQueue if individual else self.bulkMessageQueue
         lock = self.individualMessageLock if individual else self.bulkMessageLock
         lock.acquire()
-        print("[interpreter] Lock acquired")
+        logger.debug("Queue lock acquired")
         queue.append(msg)
         lock.release()
-        print("[interpreter] Lock released")
+        logger.debug("Queue lock released")
         return True
 
     def send_message(self, msg):
@@ -72,7 +75,7 @@ class Messenger(object):
                 telegram.Bot(self.teleBotToken).send_message(teleUserId, msg[:3500],\
                     disable_notification=True)
         except ValueError as e:
-            print("Error sending message: ", e)
+            logger.critical("Error sending message: ", e)
             
 
     def wait_until_message_can_be_sent(self):
@@ -124,7 +127,7 @@ class Messenger(object):
                 sendList = self.create_bulk_message()
                 self.bulkMessageLock.release()
             if sendList:
-                print("[interpreter] sending message")
+                logger.debug("Sending message")
                 msg = self.joiner.join(list(map(str, sendList)))
                 self.send_message(msg)
                 handledIds = {"ebay": [], "wggesucht": []}
@@ -136,7 +139,5 @@ class Messenger(object):
                     else:
                         site = ""
                     handledIds[site].append(ad.adid.get())
-                    #print(f"[interpreter] handled id {ad.adid.get()} for {site}")
-                #print(f"[interpreter] returning {handledIds}")
                 return handledIds
         return None
