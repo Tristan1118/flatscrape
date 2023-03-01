@@ -5,7 +5,7 @@ import telegram
 
 # Distance limit, at which point offers become less interesting. This is not
 # a hard filter, only to determine the priority of a message.
-INDIVIDUAL_DIST_LIMIT = 6
+DISTANCE_LIMIT_PRIO = 6
 
 class Messenger(object):
     """Send messages via telegram"""
@@ -21,14 +21,25 @@ class Messenger(object):
         self.translate = translate
 
     def handle_advert(self, advert):
+        """
+        Main method for outside classes. Perform all necessary steps to send
+        the advert information to the end user.
+        """
         individual = self.should_send_individually(advert)
         self.add_to_queue(advert, individual=individual)    
 
     def should_send_individually(self, advert):
+        """
+        Determine whether an advert should be sent in a separate or bulk
+        message. The reason for bulk messaging is that there is a limit on
+        the number of messages we can sent in a time frame. The decision is
+        made based on attractiveness of the advert and the current demand on
+        messaging.
+        """
         if advert.title and "tausch" in advert.title.get().lower():
             return False
         if advert.distances and \
-                all(map(lambda d: d > INDIVIDUAL_DIST_LIMIT, advert.distances.get().values())):
+                all(map(lambda d: d > DISTANCE_LIMIT_PRIO, advert.distances.get().values())):
             return False
         # if many messages are queued and it is wg, it is low priority
         if len(self.individualMessagesQueue) > 9 and advert.flatType and \
@@ -37,6 +48,7 @@ class Messenger(object):
         return True
 
     def add_to_queue(self, msg, individual=True):
+        """Thread safe queueing for asynchronous messaging."""
         print(f"[interpreter] adding to queue {individual=}")
         queue = self.individualMessagesQueue if individual else self.bulkMessageQueue
         lock = self.individualMessageLock if individual else self.bulkMessageLock
@@ -48,12 +60,13 @@ class Messenger(object):
         return True
 
     def send_message(self, msg):
-        #print("[interpreter] \n----MESSAGE:-------\n" + msg)
+        """Public method for sending the message via telegram."""
         self._send_message_telegram(msg)
         self.sendTimes.append(time.time())
 
 
     def _send_message_telegram(self, msg):
+        """Private method for sending message. Not to be called directly."""
         try:
             for teleUserId in self.teleUserIds:
                 telegram.Bot(self.teleBotToken).send_message(teleUserId, msg[:3500],\
@@ -63,7 +76,8 @@ class Messenger(object):
             
 
     def wait_until_message_can_be_sent(self):
-        """Wait until all of:
+        """
+        Wait until all of:
             1. no more than ten messages sent in last minute
             2. at least 3 seconds have passed since last message
         """
@@ -74,6 +88,10 @@ class Messenger(object):
         return True
 
     def create_bulk_message(self):
+        """
+        Pop as many messages off the bulk queue while staying within the length
+        limit.
+        """
         sendList = []
         while len(self.bulkMessageQueue) > 0:
             if len(self.joiner.join(
@@ -85,9 +103,14 @@ class Messenger(object):
         return sendList
 
     def check_queue(self):
+        """Check if asynchronous messenger is finished."""
         return len(self.individualMessagesQueue) + len(self.bulkMessageQueue) > 0
 
     def handle_queue(self):
+        """
+        Generate a message from the queues and send it. Return the advert ids
+        that were covered by the message.
+        """
         if self.individualMessagesQueue or\
                 self.bulkMessageQueue:
             self.wait_until_message_can_be_sent()

@@ -14,6 +14,7 @@ ALL_RUN_IDS = [ID_EBAY, ID_WG_SHARE, ID_WG_NOSHARE] = 0,1,2
 PERSISTANCY_FILE_LOCAL = "exploredIds.json"
 
 def ebay(exploredOfferIDs, messenger, searchParameters):
+    """ Handle ebay search URLs """
     scraper = EbayScraper(exploredOfferIDs)
     for searchURL in searchParameters.ebayUrls:
         scrapedAdverts = scraper.scrape_search_page(searchURL)
@@ -34,6 +35,7 @@ def ebay(exploredOfferIDs, messenger, searchParameters):
     return True
 
 def wggesucht(exploredOfferIDs, messenger, searchParameters, flatshare=True):
+    """ Handle wggesucht search URLs """
     scraper = WgGesuchtScraper(exploredOfferIDs)
     for searchURL in searchParameters.wggesuchtFlatUrls:
         scrapedAdverts = scraper.scrape_search_page(searchURL)

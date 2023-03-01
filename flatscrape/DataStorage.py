@@ -4,6 +4,7 @@ import geopy.distance
 import util
 
 class DataField():
+    """ Typed dictionary entry I guess """
     def __init__(self, expectedTypes=[object]):
         self.expectedTypes = expectedTypes
         self.isset = False
@@ -25,7 +26,7 @@ class DataField():
         
 
 def DataStorageClass(classname, dataTypes):
-    """ an abomination, because I was bored """
+    """ An abomination, because I was bored """
     class DataStorage():
         def __init__(self):
             self.__dict__.update({t: DataField(dataTypes[t]) for t in dataTypes.keys()})
@@ -53,7 +54,7 @@ class SearchParameters():
         self.city = "Berlin"
         self.poiDistances = {}
         self.poiRoutes = []
-        self.translate = None # no translation
+        self.translate = None
         self.parse_aws_event(awsEvent)
 
     def parse_aws_event(self, awsEvent):

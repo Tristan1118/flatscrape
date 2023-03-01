@@ -19,7 +19,6 @@ MAX_REQUEST = 10
 
 class Scraper(abc.ABC):
     """Base class for scraping offers from websites"""
-
     def __init__(self, exploredOfferIDs = [], maxPrice=900):
         self._logger = logging.getLogger("Scraper")
         self._requestTimes = [] # store times of requests for ddos detection
@@ -45,7 +44,7 @@ class Scraper(abc.ABC):
         # make request
         headers = {'User-agent': self._get_user_agent()}
         reqCount = 0
-        # some websites are buggy and return 404 when frequently queried..
+        # again, this is weird but seems to happen. 404 sometimes goes away
         #print(requests.get(url, headers=headers))
         while reqCount < MAX_REQUEST and \
                 (resp := requests.get(url, headers=headers)).status_code == 404:
@@ -72,8 +71,9 @@ class Scraper(abc.ABC):
         return soupElement.text.strip()
 
     def _prefilter_offer(self, exposePrice):
-        """Extensible filter for offers. Note that this is often already done
-        in the search url (e.g. wggesucht)."""
+        """Pre filter for offers. Note that this is often already done
+        in the search url (e.g. wggesucht). The purpose of prefiltering is to
+        reduce the number of requests."""
         if exposePrice > self._maxPrice:
             return False
         return True
@@ -194,7 +194,6 @@ class EbayScraper(Scraper):
 
     def scrape_search_page(self, searchURL):
         offerSoup = self._make_request(searchURL)
-        #print(offerSoup)
         adverts = []
         for expose in offerSoup.find_all(class_="aditem"):
             exposeId = int(expose.get("data-adid"))

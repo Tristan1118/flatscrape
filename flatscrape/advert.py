@@ -36,6 +36,7 @@ AdvertNoPrint = DataStorage.DataStorageClass("AdvertNoPrint",
 )
 
 class Advert(AdvertNoPrint):
+    """Store information from scraped advert."""
     def __str__(self):
         lines = []
         if (title := self.title):
@@ -89,6 +90,7 @@ def set_distances(advert, pointsOfInterestCoordinates, city):
     return True
 
 def set_routes(advert, pointsOfInterestRoute):
+    """Generate google maps strings and store them in advert."""
     if (address := advert.address):
         routes = [f"https://www.google.com/maps/dir/" +\
                   f"{urllib.parse.quote_plus(address.get())}/" +\
@@ -100,6 +102,7 @@ def set_routes(advert, pointsOfInterestRoute):
         return False
 
 def filter_advert(advert, searchParameters):
+    """Filter advert based on the search parameters."""
     if advert.price and advert.price.get() > searchParameters.maxPrice:
         return False
     if advert.size and advert.size.get() < searchParameters.minSize:
@@ -123,6 +126,8 @@ def filter_advert(advert, searchParameters):
     return True
 
 def translate_advert(advert, language):
+    """Translate title and description."""
+    if not language: return advert
     if (title := advert.title):
         translatedTitle = deep_translator.GoogleTranslator(\
             source='auto', target=language).translate(title.get())
