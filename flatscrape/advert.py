@@ -1,21 +1,13 @@
 import datetime as dt
 import urllib
-
+import deep_translator
 import geopy
 import geopy.distance
-from deep_translator import GoogleTranslator
-
-from DataStorage import DataStorageClass
-
-
+import DataStorage
 
 MAX_DESCRIPTION_LEN = 1500
 
-
-
-
-
-AdvertNoPrint = DataStorageClass("AdvertNoPrint",
+AdvertNoPrint = DataStorage.DataStorageClass("AdvertNoPrint",
     {
         # strings
         "adid" : [str, int],
@@ -76,7 +68,7 @@ class Advert(AdvertNoPrint):
         if (description := self.description):
             lines.append(description.get()[:MAX_DESCRIPTION_LEN])
         if (url := self.url):
-            lines.append("Link:" url.get())
+            lines.append(f"Link: {url.get()}")
         if (address := self.address):
             lines.append(f"Address: {address.get()}")
         if (routes := self.routes):
@@ -107,26 +99,35 @@ def set_routes(advert, pointsOfInterestRoute):
     else:
         return False
 
-
 def filter_advert(advert, searchParameters):
     if advert.price and advert.price.get() > searchParameters.maxPrice:
         return False
     if advert.size and advert.size.get() < searchParameters.minSize:
         return False
-    if advert.moveInDate and type(advert.moveInDate.get()) == dt.datetime and advert.moveInDate.get() < searchParameters.moveInLower:
+    if advert.moveInDate and\
+            type(advert.moveInDate.get()) == dt.datetime and\
+            advert.moveInDate.get() < searchParameters.moveInLower:
         return False
-    if advert.moveInDate and type(advert.moveInDate.get()) == dt.datetime and advert.moveInDate.get() > searchParameters.moveInUpper:
+    if advert.moveInDate and\
+            type(advert.moveInDate.get()) == dt.datetime and\
+            advert.moveInDate.get() > searchParameters.moveInUpper:
         return False
-    if advert.moveOutDate and type(advert.moveOutDate.get()) == dt.datetime and advert.moveOutDate.get() < searchParameters.moveOutLower:
+    if advert.moveOutDate and\
+            type(advert.moveOutDate.get()) == dt.datetime and\
+            advert.moveOutDate.get() < searchParameters.moveOutLower:
         return False
-    if advert.moveOutDate and type(advert.moveOutDate.get()) == dt.datetime and advert.moveOutDate.get() > searchParameters.moveOutUpper:
+    if advert.moveOutDate and\
+            type(advert.moveOutDate.get()) == dt.datetime and\
+            advert.moveOutDate.get() > searchParameters.moveOutUpper:
         return False
     return True
 
 def translate_advert(advert, language):
     if (title := advert.title):
-        translatedTitle = GoogleTranslator(source='auto', target=language).translate(title.get())
+        translatedTitle = deep_translator.GoogleTranslator(\
+            source='auto', target=language).translate(title.get())
         title.set(translatedTitle)
     if (description := advert.description):
-        translatedDescription = GoogleTranslator(source='auto', target=language).translate(description.get())
+        translatedDescription = deep_translator.GoogleTranslator(\
+            source='auto', target=language).translate(description.get())
         description.set(translatedDescription[:MAX_DESCRIPTION_LEN])

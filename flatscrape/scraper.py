@@ -1,15 +1,13 @@
-import requests
+import abc
+import bs4
+import datetime as dt
 import logging
 import re
+import requests
 import time
 import urllib
-import datetime as dt
-from abc import ABC, abstractmethod
-from bs4 import BeautifulSoup
-
-from advert import Advert
+import advert as advert_module
 import util
-
 
 # This file is a mess and I hate it - these websites are not too friendly for bots.
 # So some evasion/request throttling is done, which introduces
@@ -19,7 +17,7 @@ import util
 
 MAX_REQUEST = 10
 
-class Scraper(ABC):
+class Scraper(abc.ABC):
     """Base class for scraping offers from websites"""
 
     def __init__(self, exploredOfferIDs = [], maxPrice=900):
@@ -30,7 +28,6 @@ class Scraper(ABC):
 
     def _get_user_agent(self):
         """Get constant or random user agent to make requests."""
-        #return "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:100.0) Gecko/20100101 Firefox/100.0"
         return 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) ' +\
             'AppleWebKit/605.1.15 (KHTML, like Gecko) ' +\
             'Version/15.4 Safari/605.1.15'
@@ -61,7 +58,7 @@ class Scraper(ABC):
                 f"Got response: {resp.status_code}: {resp.text}")
         # parse as soup
         #print("parsing ", resp.text)
-        soup = BeautifulSoup(resp.text, 'html.parser')
+        soup = bs4.BeautifulSoup(resp.text, 'html.parser')
         print("Parser done souping")
         return soup
 
@@ -81,7 +78,7 @@ class Scraper(ABC):
             return False
         return True
 
-    @abstractmethod
+    @abc.abstractmethod
     def scrape_search_page(self, searchURL):
         """Return list of relevant information on adverts found on the url."""
         pass
@@ -104,7 +101,7 @@ class WgGesuchtScraper(Scraper):
             if exposeId in self._exploredOfferIDs:
                 continue
             self._exploredOfferIDs.append(exposeId)
-            advert = Advert()
+            advert = advert_module.Advert()
             advert.adid.set(exposeId)
             advert.title.set(self._find_in_soup(
                 expose, class_="truncate_title noprint"))
@@ -154,7 +151,7 @@ class EbayScraper(Scraper):
 
     def _extract_from_expose(self, exposeUrl):
         exposeBS = self._make_request(exposeUrl)
-        advert = Advert()
+        advert = advert_module.Advert()
         advert.website.set(self._baseURL)
         advert.url.set(exposeUrl)
         advert.title.set(self._find_in_soup(

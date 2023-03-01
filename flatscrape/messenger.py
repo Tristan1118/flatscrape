@@ -1,14 +1,11 @@
-import time
 import datetime as dt
-from threading import Lock
-
+import threading
+import time
 import telegram
-
 
 # Distance limit, at which point offers become less interesting. This is not
 # a hard filter, only to determine the priority of a message.
 INDIVIDUAL_DIST_LIMIT = 6
-
 
 class Messenger(object):
     """Send messages via telegram"""
@@ -18,8 +15,8 @@ class Messenger(object):
         self.joiner = ""
         self.individualMessagesQueue = []
         self.bulkMessageQueue = []
-        self.individualMessageLock = Lock()
-        self.bulkMessageLock = Lock()
+        self.individualMessageLock = threading.Lock()
+        self.bulkMessageLock = threading.Lock()
         self.sendTimes = []
         self.translate = translate
 
@@ -89,7 +86,6 @@ class Messenger(object):
 
     def check_queue(self):
         return len(self.individualMessagesQueue) + len(self.bulkMessageQueue) > 0
-
 
     def handle_queue(self):
         if self.individualMessagesQueue or\

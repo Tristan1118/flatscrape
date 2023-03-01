@@ -1,8 +1,7 @@
 import datetime as dt
 import geopy
 import geopy.distance
-
-from util import parse_german_date
+import util
 
 class DataField():
     def __init__(self, expectedTypes=[object]):
@@ -60,10 +59,10 @@ class SearchParameters():
     def parse_aws_event(self, awsEvent):
         self.maxPrice = awsEvent.get("maxPrice", self.maxPrice)
         self.minSize = awsEvent.get("minSize", self.minSize)
-        self.moveInLower = parse_german_date(awsEvent.get("moveInLower", "01.01.1900"))
-        self.moveInUpper = parse_german_date(awsEvent.get("moveInUpper", "01.01.3000"))
-        self.moveOutLower = parse_german_date(awsEvent.get("moveOutLower", "01.01.1900"))
-        self.moveOutUpper = parse_german_date(awsEvent.get("moveOutUpper", "01.01.3000"))
+        self.moveInLower = util.parse_german_date(awsEvent.get("moveInLower", "01.01.1900"))
+        self.moveInUpper = util.parse_german_date(awsEvent.get("moveInUpper", "01.01.3000"))
+        self.moveOutLower = util.parse_german_date(awsEvent.get("moveOutLower", "01.01.1900"))
+        self.moveOutUpper = util.parse_german_date(awsEvent.get("moveOutUpper", "01.01.3000"))
         self.wggesuchtFlatUrls = awsEvent.get("wggesuchtUrls", {"Flat": self.wggesuchtFlatUrls}).get("Flat")
         self.wggesuchtWGUrls = awsEvent.get("wggesuchtUrls", {"WG": self.wggesuchtWGUrls}).get("WG")
         self.ebayUrls = awsEvent.get("ebayUrls", self.ebayUrls)
