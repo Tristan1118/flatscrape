@@ -3,6 +3,7 @@ import logging
 import string
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 def get_int_from_text(text):
     """Can be used when some number must be generated from a text with numbers.

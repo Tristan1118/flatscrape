@@ -5,6 +5,7 @@ import time
 import telegram
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 # Distance limit, at which point offers become less interesting. This is not
 # a hard filter, only to determine the priority of a message.

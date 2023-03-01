@@ -7,6 +7,7 @@ import geopy.distance
 import DataStorage
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 MAX_DESCRIPTION_LEN = 1500
 
@@ -85,6 +86,7 @@ def set_distances(advert, pointsOfInterestCoordinates, city):
         return False
     start = geopy.Nominatim(user_agent="flatscrape").geocode(\
         advert.address.get() + " " + city)
+    logger.debug("Got Nominatim")
     if not start:
         return False
     distances = {poi : geopy.distance.distance(loc, start.point).km\

@@ -5,6 +5,7 @@ import geopy.distance
 import util
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 class DataField():
     """ Typed dictionary entry I guess """

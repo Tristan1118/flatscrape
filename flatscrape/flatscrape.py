@@ -11,6 +11,7 @@ from scraper import WgGesuchtScraper, EbayScraper
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 ALL_RUN_IDS = [ID_EBAY, ID_WG_SHARE, ID_WG_NOSHARE] = 0,1,2
 # For testing (non-lambda deployment)

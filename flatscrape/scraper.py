@@ -10,6 +10,7 @@ import advert as advert_module
 import util
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 # This file is a mess and I hate it - these websites are not too friendly for bots.
 # So some evasion/request throttling is done, which introduces
